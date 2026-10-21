@@ -1,0 +1,14 @@
+[
+  {
+    "relation": [
+      "delegate_permission/common.handle_all_urls"
+    ],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.healthandhit.healthhit",
+      "sha256_cert_fingerprints": [
+        "80:70:7A:86:5E:D6:AA:03:3A:14:6C:02:31:59:BA:72:A1:B7:27:56:31:E5:50:2C:5F:05:AC:18:0A:FD:2E:4C"
+      ]
+    }
+  }
+]
