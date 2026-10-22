@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Weekly check-in - HealthAdmin</title>
+<style>
+  :root{--bg:#0b0b0e;--card:#16161b;--line:#26262e;--txt:#f3f3f5;--mut:#a0a0aa;--red:#e11d2e;--red2:#b5141f}
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;background:var(--bg);color:var(--txt);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;display:flex;align-items:center;justify-content:center;padding:22px}
+  .card{width:100%;max-width:420px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px 22px;text-align:center}
+  .logo{font-weight:800;letter-spacing:.5px;font-size:22px}.logo b{color:var(--red)}
+  h1{font-size:21px;margin:18px 0 6px}
+  p{color:var(--mut);margin:6px 0 0}
+  .btn{display:block;width:100%;margin-top:14px;padding:16px;border-radius:13px;font-weight:700;font-size:17px;text-decoration:none;border:0;cursor:pointer}
+  .main{background:var(--red);color:#fff}.main:active{background:var(--red2)}
+  .small{font-size:13px;color:var(--mut);margin-top:16px}
+  .hide{display:none}
+</style>
+</head>
+<body>
+<main class="card">
+  <div class="logo">HEALTH AND <b>HIT</b></div>
+  <div id="ok">
+    <h1>Weekly check-in 🔐</h1>
+    <p id="msg">Opening HealthAdmin…</p>
+    <a class="btn main" id="open" href="#">Open in HealthAdmin</a>
+    <p class="small">This link is for the coach. The client's name and note are encrypted - only the coach's HealthAdmin can read them.<br>If nothing opens, tap the attached <b>.hhcheckin</b> file in the email and choose HealthAdmin.</p>
+  </div>
+  <div id="noapp" class="hide">
+    <h1>HealthAdmin isn't on this phone</h1>
+    <p>Open this link on the coach's phone (HealthAdmin installed), or open the attached <b>.hhcheckin</b> file there.</p>
+  </div>
+  <div id="bad" class="hide">
+    <h1>This link is incomplete</h1>
+    <p>The check-in didn't come through in full. Open the email again and tap the attached <b>.hhcheckin</b> file instead.</p>
+  </div>
+</main>
+<script>
+/* Everything happens on this phone: the check-in (name and note encrypted) is after the "#" in the link, which browsers never send to any
+   server. This page makes no network calls. HealthAdmin normally opens the link itself (App Link); this page is the fallback. */
+(function () {
+  var PKG = "com.healthapp.admin";
+  if (/^#?noapp$/.test(location.hash || "")) { document.getElementById("ok").className = "hide"; document.getElementById("noapp").className = ""; return; }
+  var raw = (location.hash || "").replace(/^#/, ""), q = /[?&]d=([^&]+)/.exec(location.search || "");
+  if (/^d=/.test(raw)) raw = raw.slice(2);
+  if (!raw && q) raw = q[1];
+  var ok = raw.length >= 20 && /^[A-Za-z0-9+\-$_%]+$/.test(raw);
+  if (!ok) { document.getElementById("ok").className = "hide"; document.getElementById("bad").className = ""; return; }
+  var android = /Android/i.test(navigator.userAgent || "");
+  var back = location.origin + location.pathname + "#noapp";
+  var scheme = "hhcoach://checkin?d=" + raw;
+  var intent = "intent://checkin?d=" + raw + "#Intent;scheme=hhcoach;package=" + PKG + ";S.browser_fallback_url=" + encodeURIComponent(back) + ";end";
+  var open = document.getElementById("open"), msg = document.getElementById("msg");
+  open.href = android ? intent : scheme;
+  if (!android) { msg.textContent = "Open this link on your Android phone with HealthAdmin installed."; return; }
+  // one automatic try; some in-app browsers (e.g. Gmail) only allow it from a tap, so the button stays
+  var tried = false;
+  function go() { if (tried) return; tried = true; try { location.href = intent; } catch (e) { } }
+  setTimeout(go, 250);
+  setTimeout(function () { msg.textContent = "If HealthAdmin didn't open, tap the button below."; }, 1800);
+  window.__hh = { intent: intent, scheme: scheme, android: android };
+})();
+</script>
+</body>
+</html>
