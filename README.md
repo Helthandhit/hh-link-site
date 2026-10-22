@@ -3,8 +3,15 @@
 - `p/index.html` - opened by `https://app.healthandhit.com/p#<payload>` when the App Link isn't verified (or the app isn't installed).
   Reads the plan from the `#` (never sent to a server), tries `intent://plan?d=...;scheme=healthandhit;package=com.healthandhit.healthhit`
   with the Play Store as fallback, and shows "Open in HealthHIT" + Play buttons. No network calls.
+- `j/index.html` - (HealthAdmin 1.3.8) opened by `https://app.healthandhit.com/j#<payload>` - the one-tap "add this client" link in a
+  HealthHIT sign-up - when HealthAdmin's App Link isn't verified. The payload is the encrypted sign-up (after the `#`, never sent
+  to a server); it hands over via `intent://join?d=...;scheme=hhcoach;package=com.healthapp.admin`. No network calls.
+- `c/index.html` - the same fallback page for HealthHIT 1.2.47+ weekly check-in links (`https://app.healthandhit.com/c#...`),
+  handing over via `intent://checkin?d=...;scheme=hhcoach;package=com.healthapp.admin`. HealthAdmin 1.3.9+ opens `/c` itself.
+  No assetlinks change needed (the HealthAdmin statement covers the whole domain). No network calls.
 - `.well-known/assetlinks.json` - lets Android open HealthHIT straight from the link (App Link). **Replace the placeholder with the
   Play Console "App signing key certificate" SHA-256** (Setup > App integrity). The second entry is the upload key (my-release-key.jks).
+  The second statement (HealthAdmin 1.3.8) lets HealthAdmin (`com.healthapp.admin`, sideloaded, signed with the same key) open `/j` links.
 - `CNAME` - `app.healthandhit.com`. `.nojekyll` - required, otherwise GitHub Pages hides `.well-known`.
 
 ## Go live
