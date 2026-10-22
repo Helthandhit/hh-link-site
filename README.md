@@ -14,6 +14,12 @@
   never sent to a server) is signed by HealthAdmin like a plan (not encrypted - it's the coach's own note to the client). It hands over
   via `intent://feedback?d=...;scheme=healthandhit;package=com.healthandhit.healthhit` with Google Play as fallback.
   HealthHIT 1.2.48+ opens `/f` itself. No assetlinks change needed (the HealthHIT statement covers the whole domain). No network calls.
+- `w/index.html` - (HealthHIT 1.2.49) fallback for **share links** (a meal, food day or workout shared from HealthHIT) on
+  `https://app.healthandhit.com/w#<code>`. Until now HealthHIT shared `https://go.healthandhit.com/w#...`, but go.healthandhit.com
+  is not live, so those links open a dead page (Android 12+ opens unverified links in the browser). HealthHIT 1.2.49 already
+  **accepts** app.healthandhit.com/w links (App Link + router); once this page is live, switching the links HealthHIT *sends* is a
+  one-line change (`SHARE_HOST` in js/hh-share.js) - George's call. Hands over via `intent://import?c=<code>;scheme=healthandhit`.
+  No network calls; the code stays after the `#`.
 - `.well-known/assetlinks.json` - lets Android open HealthHIT straight from the link (App Link). **Replace the placeholder with the
   Play Console "App signing key certificate" SHA-256** (Setup > App integrity). The second entry is the upload key (my-release-key.jks).
   The second statement (HealthAdmin 1.3.8) lets HealthAdmin (`com.healthapp.admin`, sideloaded, signed with the same key) open `/j` links.
