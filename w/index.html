@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Shared with you - HealthHIT</title>
+<style>
+  :root{--bg:#0b0b0e;--card:#16161b;--line:#26262e;--txt:#f3f3f5;--mut:#a0a0aa;--red:#e11d2e;--red2:#b5141f;--green:#33d176}
+  *{box-sizing:border-box}
+  body{margin:0;min-height:100vh;background:var(--bg);color:var(--txt);font:16px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;display:flex;align-items:center;justify-content:center;padding:22px}
+  .card{width:100%;max-width:420px;background:var(--card);border:1px solid var(--line);border-radius:18px;padding:26px 22px;text-align:center}
+  .logo{font-weight:800;letter-spacing:.5px;font-size:22px}.logo b{color:var(--red)}
+  h1{font-size:21px;margin:18px 0 6px}
+  p{color:var(--mut);margin:6px 0 0}
+  .btn{display:block;width:100%;margin-top:14px;padding:16px;border-radius:13px;font-weight:700;font-size:17px;text-decoration:none;border:0;cursor:pointer}
+  .main{background:var(--red);color:#fff}.main:active{background:var(--red2)}
+  .sec{background:#22222a;color:#f3f3f5;border:1px solid var(--line)}
+  .small{font-size:13px;color:var(--mut);margin-top:16px}
+  .hide{display:none}
+</style>
+</head>
+<body>
+<main class="card">
+  <div class="logo">HEALTH AND <b>HIT</b></div>
+  <div id="ok">
+    <h1>Shared with you 🍽️🏋️</h1>
+    <p id="msg">Opening HealthHIT…</p>
+    <a class="btn main" id="open" href="#">Open in HealthHIT</a>
+    <a class="btn sec" id="play" href="https://play.google.com/store/apps/details?id=com.healthandhit.healthhit">Update / get HealthHIT on Google Play</a>
+    <p class="small">A meal, food day or workout someone shared from HealthHIT. It opens on HealthHIT's <b>Import</b> screen, where you choose what to add.<br>No app yet? Get it on Google Play, then tap the link again. Or copy this whole link and paste it in HealthHIT › Import.</p>
+  </div>
+  <div id="bad" class="hide">
+    <h1>This link is incomplete</h1>
+    <p>The message didn't come through in full. Open the message again and tap the link once more, or ask them to share it again.</p>
+  </div>
+</main>
+<script>
+/* Everything happens on this phone: the feedback (signed by the coach's app) is after the "#" in the link, which browsers never send to
+   any server. This page makes no network calls. HealthHIT 1.2.49+ opens app.healthandhit.com/w links itself (App Link); this page is the fallback.
+   Hand-over: intent://import?c=<code> (HealthHIT's share-link format since 1.1; the code is never sent anywhere). */
+(function () {
+  var PKG = "com.healthandhit.healthhit", PLAY = "https://play.google.com/store/apps/details?id=" + PKG;
+  var raw = (location.hash || "").replace(/^#/, ""), q = /[?&](?:c|code|data|d)=([^&]+)/.exec(location.search || "");
+  if (/^(c|code|data|d)=/.test(raw)) raw = raw.replace(/^(c|code|data|d)=/, "");
+  if (!raw && q) raw = q[1];
+  var ok = raw.length >= 8 && /^[A-Za-z0-9+\-$_%~.]+$/.test(raw);
+  if (!ok) { document.getElementById("ok").className = "hide"; document.getElementById("bad").className = ""; return; }
+  var android = /Android/i.test(navigator.userAgent || "");
+  var scheme = "healthandhit://import?c=" + raw;
+  var intent = "intent://import?c=" + raw + "#Intent;scheme=healthandhit;package=" + PKG + ";S.browser_fallback_url=" + encodeURIComponent(PLAY) + ";end";
+  var open = document.getElementById("open"), msg = document.getElementById("msg");
+  open.href = android ? intent : scheme;
+  if (!android) { msg.textContent = "Open this link on your Android phone with HealthHIT installed."; return; }
+  // one automatic try; some in-app browsers (e.g. Gmail, WhatsApp) only allow it from a tap, so the button stays
+  var tried = false;
+  function go() { if (tried) return; tried = true; try { location.href = intent; } catch (e) { } }
+  setTimeout(go, 250);
+  setTimeout(function () { msg.textContent = "If HealthHIT didn't open, tap the button below."; }, 1800);
+  window.__hh = { intent: intent, scheme: scheme, android: android };
+})();
+</script>
+</body>
+</html>
