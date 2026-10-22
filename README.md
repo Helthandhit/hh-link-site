@@ -9,6 +9,11 @@
 - `c/index.html` - the same fallback page for HealthHIT 1.2.47+ weekly check-in links (`https://app.healthandhit.com/c#...`),
   handing over via `intent://checkin?d=...;scheme=hhcoach;package=com.healthapp.admin`. HealthAdmin 1.3.9+ opens `/c` itself.
   No assetlinks change needed (the HealthAdmin statement covers the whole domain). No network calls.
+- `f/index.html` - (HealthAdmin 1.4.0 / HealthHIT 1.2.48) opened by `https://app.healthandhit.com/f#<payload>` - the coach's
+  "Reviewed + note" feedback link - when HealthHIT's App Link isn't verified or the app isn't installed. The payload (after the `#`,
+  never sent to a server) is signed by HealthAdmin like a plan (not encrypted - it's the coach's own note to the client). It hands over
+  via `intent://feedback?d=...;scheme=healthandhit;package=com.healthandhit.healthhit` with Google Play as fallback.
+  HealthHIT 1.2.48+ opens `/f` itself. No assetlinks change needed (the HealthHIT statement covers the whole domain). No network calls.
 - `.well-known/assetlinks.json` - lets Android open HealthHIT straight from the link (App Link). **Replace the placeholder with the
   Play Console "App signing key certificate" SHA-256** (Setup > App integrity). The second entry is the upload key (my-release-key.jks).
   The second statement (HealthAdmin 1.3.8) lets HealthAdmin (`com.healthapp.admin`, sideloaded, signed with the same key) open `/j` links.
