@@ -1,8 +1,8 @@
 {
  "type": "hh-coach-key",
  "v": 1,
- "kid": "mlY07oQ2fCa",
- "pub": "BGtJ1TUnN6XMLSJkpY66TBjemSCtHhdxIjcYqHomomkoE9kYjBAWQZpLHfahVJqXr4XqGFjqFLTSuKyLHrXTQPQ",
+ "kid": "gt_E9xWjpem",
+ "pub": "BCOOhRwky7ndmNNBturwzsxrgQ6HhyvCTzCiOaCVNKNLtQq80zbR15mFvmoI85EDLvShw0L8V0thZgmIKD08CSM",
  "alg": "P256-HKDF-AESGCM",
- "published": "2026-10-22"
+ "published": "2026-11-01"
 }
